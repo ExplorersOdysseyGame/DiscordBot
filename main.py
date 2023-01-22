@@ -47,6 +47,7 @@ class EODCBClient(discord.Client):
 	async def on_ready(self):
 		self.messageLog = []
 		print(f'Logged on as {self.user}!')
+		print(f'Retrieved app ID {infoArguments["appid"]} and main guild ID {infoArguments["guildid"]}')
 		if specialArguments["useTestRun"] == True: # Close bot after [sts] seconds to stop test run
 			print(f'Using test run mode, beginning stop countdown')
 			sts = 30
