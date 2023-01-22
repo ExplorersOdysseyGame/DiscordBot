@@ -57,7 +57,7 @@ class EODCBClient(discord.Client):
 		if specialArguments["useTestRun"] == True: # Close bot after [sts] seconds to stop test run
 			print(f'Using test run mode, beginning stop countdown');
 			await self.change_presence(activity=discord.Game(name="Test Run mode"));
-			sts = 30;
+			sts = 45;
 			for i in range(sts):
 				print(f'{sts} seconds until stopping');
 				sts -= 1;
