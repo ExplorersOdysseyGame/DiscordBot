@@ -37,11 +37,13 @@ else:
 		infoArguments[infoarg] = extractValueFromNoneList([os.environ[envi] if envi == f"DISCORD_{infoarg.upper()}" else None for envi in os.environ]);
 
 class EODCBClient(discord.Client):
-    async def on_ready(self):
-        print(f'Logged on as {self.user}!')
+	async def on_ready(self):
+		self.messageLog = []
+		print(f'Logged on as {self.user}!')
 
-    async def on_message(self, message):
-        print(f'Message from {message.author}: {message.content}')
+	async def on_message(self, message):
+		self.messageLog.append([message.author, message.content])
+		self.messageLog = self.messageLog[-25:] # Only cache the most recent 25 messages
 
 intents = discord.Intents.default()
 intents.message_content = True
