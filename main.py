@@ -1,4 +1,4 @@
-requirements = ["os", "sys", "discord", "asyncio"];
+requirements = ["os", "sys", "discord", "asyncio", "interactions", "threading"];
 doCloseFileAfterReq = False; # Sets to true if a required import isn't installed
 for req in requirements:
 	try:
@@ -44,32 +44,38 @@ else:
 		infoArguments[infoarg] = extractValueFromNoneList([os.environ[envi] if envi == f"DISCORD_{infoarg.upper()}" else None for envi in os.environ]);
 
 class EODCBClient(discord.Client):
+	interactionsClient = interactions.Client(token=infoArguments["token"]);
+	commands = ["ping"]
 	async def on_ready(self):
-		self.messageLog = []
-		print(f'Logged on as {self.user}!')
-		await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="over Explorer's Odyssey discord"))
-		print(f'Retrieved app ID {infoArguments["appid"]} and main guild ID {infoArguments["guildid"]}')
+		self.messageLog = [];
+		print(f'Logged on as {self.user}!');
+		await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="over Explorer's Odyssey discord"));
+		print(f'Retrieved app ID {infoArguments["appid"]} and main guild ID {infoArguments["guildid"]}');
+		for command in self.commands:
+			print(f'Adding {command} command')
+			self.interactionsClient.load(f"commands.{command}", dpyClient=self)
 		if specialArguments["useTestRun"] == True: # Close bot after [sts] seconds to stop test run
-			print(f'Using test run mode, beginning stop countdown')
-			await self.change_presence(activity=discord.Game(name="Test Run mode"))
-			sts = 30
+			print(f'Using test run mode, beginning stop countdown');
+			await self.change_presence(activity=discord.Game(name="Test Run mode"));
+			sts = 30;
 			for i in range(sts):
-				print(f'{sts} seconds until stopping')
-				sts -= 1
-				await asyncio.sleep(1)
-			print(f'Stopping discord bot')
-			await self.close() # Close the bot
-			raise SystemExit # Exit the program
+				print(f'{sts} seconds until stopping');
+				sts -= 1;
+				await asyncio.sleep(1);
+			print(f'Stopping discord bot');
+			await self.close(); # Close the bot
+			raise SystemExit; # Exit the program
 
 	async def on_message(self, message):
-		self.messageLog.append([message.author, message.content])
-		self.messageLog = self.messageLog[-25:] # Only cache the most recent 25 messages
+		self.messageLog.append([message.author, message.content]);
+		self.messageLog = self.messageLog[-25:]; # Only cache the most recent 25 messages
 
-intents = discord.Intents.default()
-intents.message_content = True
+intents = discord.Intents.default();
+intents.message_content = True;
 
-client = EODCBClient(intents=intents)
+client = EODCBClient(intents=intents);
 try:
-	client.run(infoArguments["token"])
+	threading.Thread(target=client.interactionsClient.start).start();
+	client.run(infoArguments["token"]);
 except TypeError as e:
-	print("No token in environment variables or botinfo.json!")
+	print("No token in environment variables or botinfo.json!");
