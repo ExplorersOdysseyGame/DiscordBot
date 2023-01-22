@@ -10,7 +10,7 @@ class PingCommand(interactions.Extension):
     	description="Get the latency of the bot"
     )
 	async def ping_command(self, ctx: interactions.CommandContext):
-		await ctx.send(f"Ping! Took {self.dpyClient.latency*1000}ms")
+		await ctx.send(f"Ping! Latency is {round(self.dpyClient.latency*1000)}ms")
 
 def setup(client, dpyClient):
 	PingCommand(client, dpyClient)
