@@ -27,15 +27,17 @@ class ModerationCommand(interactions.Extension):
 			if lineExists:
 				newline=[]
 				prevData = selectedLineCache.split(":")[1].split(",")
-				if actionName == "Ban": newLineData = f"{target.id}:0,0,0,0,{int(prevData[4])+1}"
-				elif actionName == "TempBan": newLineData = f"{target.id}:0,0,0,{int(prevData[3])+1},0"
-				elif actionName == "Kick": newLineData = f"{target.id}:0,0,{int(prevData[2])+1},0,0"
-				elif actionName == "Mute": newLineData = f"{target.id}:0,{int(prevData[1])+1},0,0,0"
-				else: newLineData = f"{target.id}:{int(prevData[0])+1},0,0,0,0"
+				if actionName == "Ban": newLineData = f"{target.id}:{int(prevData[0])},{int(prevData[1])},{int(prevData[2])},{int(prevData[3])},{int(prevData[4])+1}"
+				elif actionName == "TempBan": newLineData = f"{target.id}:{int(prevData[0])},{int(prevData[1])},{int(prevData[2])},{int(prevData[3])+1},{int(prevData[4])}"
+				elif actionName == "Kick": newLineData = f"{target.id}:{int(prevData[0])},{int(prevData[1])},{int(prevData[2])+1},{int(prevData[3])},{int(prevData[4])}"
+				elif actionName == "Mute": newLineData = f"{target.id}:{int(prevData[0])},{int(prevData[1])+1},{int(prevData[2])},{int(prevData[3])},{int(prevData[4])}"
+				else: newLineData = f"{target.id}:{int(prevData[0])+1},{int(prevData[1])},{int(prevData[2])},{int(prevData[3])},{int(prevData[4])}"
 				f = open("data/moddata.txt", "w")
 				data = ""
 				for line in lines:
-				    data = data + line.replace(selectedLineCache, newLineData+"\n")
+					nl = nl if nl.endsWith("\n") else nl+"\n"
+					nl = nl.replace(selectedLineCache, newLineData+"\n")
+				    data = data + nl
 				f.write(data)
 				f.close()
 			else:
