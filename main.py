@@ -29,6 +29,13 @@ def extractValueFromNoneList(l: list):
 	else:
 		return None;
 
+try:
+	with open("data/moddata.txt", "r") as dmdtxt:
+		dmdtxt.read()
+except Exception as e:
+	with open("data/moddata.txt", "w") as dmdtxt:
+		dmdtxt.write("ID:Warns,Mutes,Kicks,TempBans,Bans")
+
 infoArguments = {"token": "", "clisecret": "", "pubkey": "", "appid": 0, "guildid": 0};
 if specialArguments["useJSONFile"] == True:
 	# Read credentials.json

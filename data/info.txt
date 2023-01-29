@@ -1,0 +1,6 @@
+This folder holds data for the bot.
+
+Files:
+
+moddata.txt - Moderation recording
+credentials.json - Credentials file for RUN_LOCAL.BAT

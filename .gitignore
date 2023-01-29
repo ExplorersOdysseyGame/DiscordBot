@@ -8,4 +8,5 @@ venv/
 vrun.bat
 
 # Bot Data
-credentials.*
+data/*
+!data/info.txt

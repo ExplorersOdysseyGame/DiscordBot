@@ -10,6 +10,43 @@ class ModerationCommand(interactions.Extension):
 		self.dpyClient: discord.Client = dpyClient
 
 	async def logAction(self, actionName: str, actionReason: str, target: discord.Member, actor: discord.Member, clr: str = 0xFF3333):
+		# Mod data file in format of "ID:Warns,Mutes,Kicks,TempBans,Bans"
+		actionType = actionName
+		with open("data/moddata.txt", "r") as moddatafileREAD:
+			md = moddatafileREAD.read()
+			lineExists = False
+			lineNumber = 0
+			selectedLineCache = ""
+			lines = md.split("\n")
+			for line in lines:
+				if line.split(":")[0] == target.id:
+					lineExists = True
+					selectedLineCache = line
+					break
+				lineNumber += 1
+			if lineExists:
+				newline=[]
+				prevData = selectedLineCache.split(":")[1].split(",")
+				if actionName == "Ban": newLineData = f"{target.id}:0,0,0,0,{int(prevData[4])+1}"
+				elif actionName == "TempBan": newLineData = f"{target.id}:0,0,0,{int(prevData[3])+1},0"
+				elif actionName == "Kick": newLineData = f"{target.id}:0,0,{int(prevData[2])+1},0,0"
+				elif actionName == "Mute": newLineData = f"{target.id}:0,{int(prevData[1])+1},0,0,0"
+				else: newLineData = f"{target.id}:{int(prevData[0])+1},0,0,0,0"
+				f = open("data/moddata.txt", "w")
+				data = ""
+				for line in lines:
+				    data = data + line.replace(selectedLineCache, newLineData+"\n")
+				f.write(data)
+				f.close()
+			else:
+				with open("data/moddata.txt", "a") as moddatafileA:
+					if actionName == "Ban": moddatafileA.write(f"{target.id}:0,0,0,0,1")
+					elif actionName == "TempBan": moddatafileA.write(f"{target.id}:0,0,0,1,0")
+					elif actionName == "Kick": moddatafileA.write(f"{target.id}:0,0,1,0,0")
+					elif actionName == "Mute": moddatafileA.write(f"{target.id}:0,1,0,0,0")
+					else: moddatafileA.write(f"{target.id}:1,0,0,0,0")
+					moddatafileA.write("\n")
+
 		g = None
 		for guild in self.client.guilds:
 			if guild.id == guildID:
@@ -30,12 +67,12 @@ class ModerationCommand(interactions.Extension):
 					interactions.EmbedField(
 						name="Action Reason",
    						value=actionReason,
-    					inline=False,
+						inline=False,
 					),
 					interactions.EmbedField(
 						name="Action Target",
    						value=f"{target.name}#{target.discriminator}",
-    					inline=False,
+						inline=False,
 					)
 				]
 			)
