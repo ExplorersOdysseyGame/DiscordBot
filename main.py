@@ -64,12 +64,13 @@ class EODCBClient(discord.Client):
 		if specialArguments["useTestRun"] == True: # Close bot after [sts] seconds to stop test run
 			print(f'Using test run mode, beginning stop countdown');
 			await self.change_presence(activity=discord.Game(name="Test Run mode"));
-			sts = 45;
+			sts = 90;
 			for i in range(sts):
 				print(f'{sts} seconds until stopping');
 				sts -= 1;
 				await asyncio.sleep(1);
 			print(f'Stopping discord bot');
+			os.remove("data/moddata.txt") # Delete leftover mod-data
 			await self.close(); # Close the bot
 			raise SystemExit; # Exit the program
 
