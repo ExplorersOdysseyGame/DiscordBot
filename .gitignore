@@ -2,7 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
-venv/
 
-# Discord
-botinfo.*
+# Virtual Environment
+venv/
+vrun.bat
+
+# Bot Data
+credentials.*

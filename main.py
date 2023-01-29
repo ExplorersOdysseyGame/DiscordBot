@@ -31,8 +31,8 @@ def extractValueFromNoneList(l: list):
 
 infoArguments = {"token": "", "clisecret": "", "pubkey": "", "appid": 0, "guildid": 0};
 if specialArguments["useJSONFile"] == True:
-	# Read botinfo.json
-	with open("botinfo.json", "r") as bij:
+	# Read credentials.json
+	with open("data/credentials.json", "r") as bij:
 		bir = bij.read();
 		biv = [[biw.replace(",","").replace("\t", "").replace("\"", "").strip() for biw in biw.split(":")] for biw in bir.split("\n")];biv.remove(["{"]);biv.remove(["}"]);
 		for biw in biv:
@@ -45,14 +45,14 @@ else:
 
 class EODCBClient(discord.Client):
 	interactionsClient = interactions.Client(token=infoArguments["token"]);
-	commands = ["ping"]
+	commands = ["ping", "moderation"]
 	async def on_ready(self):
 		self.messageLog = [];
 		print(f'Logged on as {self.user}!');
 		await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="over Explorer's Odyssey discord"));
 		print(f'Retrieved app ID {infoArguments["appid"]} and main guild ID {infoArguments["guildid"]}');
 		for command in self.commands:
-			print(f'Adding {command} command')
+			print(f'Registering {command} command')
 			self.interactionsClient.load(f"commands.{command}", dpyClient=self)
 		if specialArguments["useTestRun"] == True: # Close bot after [sts] seconds to stop test run
 			print(f'Using test run mode, beginning stop countdown');
