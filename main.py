@@ -13,6 +13,8 @@ if doCloseFileAfterReq:
 	exit()
 print("---")
 
+print(dir(interactions.component))
+
 fileArguments = sys.argv[1:] # List of every CMD line arguments, excluding the file name
 specialArguments = { # Default version of special CMD line arguments
 	"useJSONFile": False, # Whether or not to use botinfo.json in your local directory (must have same entry names as infoArguments)
@@ -30,10 +32,10 @@ def extractValueFromNoneList(l: list):
 		return None
 
 try:
-	with open("data/moddata.txt", "r") as dmdtxt:
+	with open("data/modrecord.txt", "r") as dmdtxt:
 		dmdtxt.read()
 except Exception as e:
-	with open("data/moddata.txt", "w") as dmdtxt:
+	with open("data/modrecord.txt", "w") as dmdtxt:
 		dmdtxt.write("ID:Warns,Mutes,Kicks,TempBans,Bans\n")
 
 infoArguments = {"token": "", "clisecret": "", "pubkey": "", "appid": 0, "guildid": 0}
@@ -60,7 +62,10 @@ class EODCBClient(discord.Client):
 		print(f'Retrieved app ID {infoArguments["appid"]} and main guild ID {infoArguments["guildid"]}')
 		for command in self.commands:
 			print(f'Registering {command} command')
-			self.interactionsClient.load(f"commands.{command}", dpyClient=self)
+			try:
+				self.interactionsClient.load(f"commands.{command}", dpyClient=self)
+			except Exception as e:
+				print(f'Unable to register {command} command: {e}')
 		if specialArguments["useTestRun"] == True: # Close bot after [sts] seconds to stop test run
 			print(f'Using test run mode, beginning stop countdown')
 			await self.change_presence(activity=discord.Game(name="Test Run mode"))
@@ -69,10 +74,10 @@ class EODCBClient(discord.Client):
 			for i in range(sts):
 				print(f'{sts} seconds until stopping')
 				sts -= 1
-				await self.change_presence(activity=discord.Game(name=f"Test Run mode ({sts}/{stsm})"))
+				if sts % 15 == 0: await self.change_presence(activity=discord.Game(name=f"Test Run mode ({sts}/{stsm})"))
 				await asyncio.sleep(1)
 			print(f'Stopping discord bot')
-			os.remove("data/moddata.txt") # Delete leftover mod-data
+			os.remove("data/modrecord.txt") # Delete leftover mod-data
 			await self.close() # Close the bot
 			raise SystemExit # Exit the program
 

@@ -8,5 +8,9 @@ venv/
 vrun.bat
 
 # Bot Data
+# modrecord.txt - A record of each moderation punishment.
+# modtimes.txt - Active punishments listed here with each time.
 data/*
 !data/info.txt
+!data/modrecord.txt
+!data/modtimes.txt
